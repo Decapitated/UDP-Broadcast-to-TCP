@@ -37,6 +37,7 @@ class BroadcastServer:
     
     def __awaitConnect(self):
         tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # Use 0.0.0.0 for tcp or connection will be refused.
         tcp_socket.bind(("0.0.0.0", self.TCP_PORT))
         tcp_socket.listen(100)
         while not self.__connected:
