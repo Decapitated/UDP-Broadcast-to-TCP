@@ -18,7 +18,7 @@ def connectServer(addr, port: int):
 
 #Setup UDP socket
 udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-udp_socket.bind((UDP_GROUP, UDP_PORT))
+udp_socket.bind(("", UDP_PORT))
 mreq = struct.pack("=4sl", socket.inet_aton(UDP_GROUP), socket.INADDR_ANY)
 udp_socket.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
 
