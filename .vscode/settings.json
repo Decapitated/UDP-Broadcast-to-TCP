@@ -2,6 +2,8 @@
     "cSpell.words": [
         "DGRAM",
         "INADDR",
-        "IPPROTO"
+        "IPPROTO",
+        "mreq",
+        "REUSEADDR"
     ]
 }

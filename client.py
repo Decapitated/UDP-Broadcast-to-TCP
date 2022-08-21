@@ -17,11 +17,11 @@ def connectServer(addr, port: int):
         print("(TCP) "+data)
 
 #Setup UDP socket
-udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 udp_socket.bind((UDP_GROUP, UDP_PORT))
-udp_socket.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, struct.pack(
-    "4sL", socket.inet_aton(UDP_GROUP), socket.INADDR_ANY
-))
+mreq = struct.pack("4sl", socket.inet_aton(UDP_GROUP), socket.INADDR_ANY)
+udp_socket.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
 
 connected = False
 while not connected:
