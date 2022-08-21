@@ -1,5 +1,7 @@
 import socket
+import struct
 
+UDP_GROUP = "230.0.0.0"
 UDP_PORT = 5455
 SERVER_SECRET = "eb0492f0-1137-456e-a7ea-67a16e200f8c"
 
@@ -16,9 +18,10 @@ def connectServer(addr, port: int):
 
 #Setup UDP socket
 udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-#Set up socket to receieve broadcast
-udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-udp_socket.bind(('127.0.0.1', UDP_PORT))
+udp_socket.bind(("", UDP_PORT))
+udp_socket.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, struct.pack(
+    "4sL", socket.inet_aton(UDP_GROUP), socket.INADDR_ANY
+))
 
 connected = False
 while not connected:

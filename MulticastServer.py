@@ -4,12 +4,13 @@ from time import sleep
 import socket
 import utilities
 
-class BroadcastServer:
+class MulticastServer:
     __broadcasting = False
     __connected = False
     client = None
 
-    def __init__(self, udp_port: int, tcp_port: int, secret: str):
+    def __init__(self, udp_group: str, udp_port: int, tcp_port: int, secret: str):
+        self.UDP_GROUP = udp_group
         self.UDP_PORT = udp_port
         self.TCP_PORT = tcp_port
         self.SECRET = secret
@@ -28,13 +29,13 @@ class BroadcastServer:
         self.__broadcasting = True
         # Setup UDP socket
         udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        # Set up socket to send/receive broadcast
-        udp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        # Set up socket to send multicast
+        udp_socket.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 1)
         LOCAL_IP = utilities.getLocalIp()
         while self.__broadcasting:
-            udp_socket.sendto(":".join([self.SECRET, LOCAL_IP, str(self.TCP_PORT)]).encode(), ("127.0.0.1", self.UDP_PORT))
+            udp_socket.sendto(":".join([self.SECRET, LOCAL_IP, str(self.TCP_PORT)]).encode(), (self.UDP_GROUP, self.UDP_PORT))
             sleep(1)
-    
+
     def __awaitConnect(self):
         tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # Use 0.0.0.0 for tcp or connection will be refused.
