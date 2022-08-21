@@ -29,11 +29,13 @@ class MulticastServer:
         # Setup UDP socket
         udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         # Set up socket to send multicast
-        udp_socket.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 5)
+        udp_socket.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 1)
         LOCAL_IP = utilities.getLocalIp()
+        udp_socket.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_IF, socket.inet_aton(LOCAL_IP))
         while self.__broadcasting:
             udp_socket.sendto(":".join([self.SECRET, LOCAL_IP, str(self.TCP_PORT)]).encode(), (self.UDP_GROUP, self.UDP_PORT))
             sleep(1)
+        udp_socket.close()
 
     def __awaitConnect(self):
         tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -51,3 +53,4 @@ class MulticastServer:
                 self.__broadcasting = False
                 self.__connected = True
                 self.client = tempClient
+        tcp_socket.close()
