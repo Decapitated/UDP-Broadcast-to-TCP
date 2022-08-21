@@ -1,7 +1,7 @@
 import socket
 
 UDP_PORT = 5455
-SERVER_SECRET = "Cheese Fries!"
+SERVER_SECRET = "eb0492f0-1137-456e-a7ea-67a16e200f8c"
 
 def connectServer(addr, port: int):
     tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
