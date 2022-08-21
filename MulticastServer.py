@@ -1,4 +1,3 @@
-from numbers import Integral
 from threading import Thread
 from time import sleep
 import socket
@@ -30,7 +29,7 @@ class MulticastServer:
         # Setup UDP socket
         udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         # Set up socket to send multicast
-        udp_socket.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 1)
+        udp_socket.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 5)
         LOCAL_IP = utilities.getLocalIp()
         while self.__broadcasting:
             udp_socket.sendto(":".join([self.SECRET, LOCAL_IP, str(self.TCP_PORT)]).encode(), (self.UDP_GROUP, self.UDP_PORT))
