@@ -33,7 +33,7 @@ class MulticastServer:
         LOCAL_IP = utilities.getLocalIp()
         udp_socket.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_IF, socket.inet_aton(LOCAL_IP))
         while self.__broadcasting:
-            udp_socket.sendto(":".join([self.SECRET, LOCAL_IP, str(self.TCP_PORT)]).encode(), (self.UDP_GROUP, self.UDP_PORT))
+            udp_socket.sendto(":".join([self.SECRET, str(self.TCP_PORT)]).encode(), (self.UDP_GROUP, self.UDP_PORT))
             sleep(1)
         udp_socket.close()
 

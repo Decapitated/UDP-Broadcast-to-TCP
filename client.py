@@ -24,8 +24,8 @@ udp_socket.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
 
 connected = False
 while not connected:
-    data = udp_socket.recv(1024).decode()
-    SECRET, ADDRESS, PORT = tuple(data.split(":"))
+    data, addr = udp_socket.recvfrom(1024)
+    SECRET, PORT = tuple(data.decode().split(":"))
     if(SECRET == SERVER_SECRET):
         connected = True
-        connectServer(ADDRESS, int(PORT))
+        connectServer(addr[0], int(PORT))
