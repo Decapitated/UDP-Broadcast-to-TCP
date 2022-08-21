@@ -4,7 +4,7 @@ import socket
 import utilities
 
 class MulticastServer:
-    __broadcasting = False
+    __multicasting = False
     __connecting = False
     client = None
 
@@ -15,12 +15,12 @@ class MulticastServer:
         self.SECRET = secret
 
     def close(self):
-        self.__broadcasting = False
+        self.__multicasting = False
         self.__connecting = False
         self.client.close()
 
-    def startBroadcast(self) -> Thread:
-        thread = Thread(target=self.__broadcast)
+    def startMulticast(self) -> Thread:
+        thread = Thread(target=self.__multicast)
         thread.start()
         return thread
 
@@ -29,15 +29,15 @@ class MulticastServer:
         thread.start()
         return thread
 
-    def __broadcast(self):
-        self.__broadcasting = True
+    def __multicast(self):
+        self.__multicasting = True
         # Setup UDP socket
         udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         # Set up socket to send multicast
         udp_socket.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 1)
         LOCAL_IP = utilities.getLocalIp()
         udp_socket.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_IF, socket.inet_aton(LOCAL_IP))
-        while self.__broadcasting:
+        while self.__multicasting:
             udp_socket.sendto(":".join([self.SECRET, str(self.TCP_PORT)]).encode(), (self.UDP_GROUP, self.UDP_PORT))
             sleep(1)
         udp_socket.close()
@@ -49,14 +49,14 @@ class MulticastServer:
         tcp_socket.bind(("0.0.0.0", self.TCP_PORT))
         tcp_socket.listen()
         while self.__connecting:
-            tempClient, _addr = tcp_socket.accept()
+            tempClient = tcp_socket.accept()[0]
             data = tempClient.recv(1024).decode()
             if(data != self.SECRET):
                 tempClient.close()
                 continue
             else:
                 print("Client Connected!")
-                self.__broadcasting = False
+                self.__multicasting = False
                 self.__connecting = False
                 self.client = tempClient
         tcp_socket.close()

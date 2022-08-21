@@ -4,6 +4,7 @@
         "INADDR",
         "IPPROTO",
         "mreq",
+        "multicasting",
         "REUSEADDR"
     ]
 }
