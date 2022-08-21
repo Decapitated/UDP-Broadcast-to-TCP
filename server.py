@@ -13,6 +13,7 @@ def start():
             server.client.send(msg.encode())
     except ConnectionResetError:
         print("Client connection closed.")
+        server.close()
         start()
 
 start()

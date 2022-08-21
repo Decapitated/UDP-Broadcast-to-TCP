@@ -5,7 +5,7 @@ import utilities
 
 class MulticastServer:
     __broadcasting = False
-    __connected = False
+    __connecting = False
     client = None
 
     def __init__(self, udp_group: str, udp_port: int, tcp_port: int, secret: str):
@@ -13,6 +13,11 @@ class MulticastServer:
         self.UDP_PORT = udp_port
         self.TCP_PORT = tcp_port
         self.SECRET = secret
+
+    def close(self):
+        self.__broadcasting = False
+        self.__connecting = False
+        self.client.close()
 
     def startBroadcast(self) -> Thread:
         thread = Thread(target=self.__broadcast)
@@ -38,11 +43,12 @@ class MulticastServer:
         udp_socket.close()
 
     def __awaitConnect(self):
+        self.__connecting = True
         tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # Use 0.0.0.0 for tcp or connection will be refused.
         tcp_socket.bind(("0.0.0.0", self.TCP_PORT))
-        tcp_socket.listen(100)
-        while not self.__connected:
+        tcp_socket.listen()
+        while self.__connecting:
             tempClient, _addr = tcp_socket.accept()
             data = tempClient.recv(1024).decode()
             if(data != self.SECRET):
@@ -51,6 +57,6 @@ class MulticastServer:
             else:
                 print("Client Connected!")
                 self.__broadcasting = False
-                self.__connected = True
+                self.__connecting = False
                 self.client = tempClient
         tcp_socket.close()
